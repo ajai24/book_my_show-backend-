@@ -15,7 +15,7 @@ import org.bson.types.ObjectId;
 
 public class BookMyShowApplication {
     
-    private static final int PORT = 8080;
+    private static final int DEFAULT_PORT = 8080;
 
     public static void main(String[] args) {
         try {
@@ -25,16 +25,20 @@ public class BookMyShowApplication {
             // Initialize test data
             initializeDatabase();
             
+            // Get port from environment variable or use default
+            String portEnv = System.getenv("PORT");
+            int port = portEnv != null ? Integer.parseInt(portEnv) : DEFAULT_PORT;
+            
             // Create HTTP server
-            HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+            HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             
             // Register endpoints
             registerEndpoints(server);
             
             // Start server
             server.start();
-            System.out.println("BookMyShow Server started on port " + PORT);
-            System.out.println("Base URL: http://localhost:" + PORT);
+            System.out.println("BookMyShow Server started on port " + port);
+            System.out.println("Base URL: http://0.0.0.0:" + port);
             
             // Graceful shutdown
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -46,6 +50,7 @@ public class BookMyShowApplication {
         } catch (IOException e) {
             System.err.println("Failed to start server: " + e.getMessage());
             e.printStackTrace();
+            System.exit(1);
         }
     }
     
