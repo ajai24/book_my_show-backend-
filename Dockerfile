@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.8.6-openjdk-11 AS build
+FROM maven:3.8.6-jdk-11 AS build
 WORKDIR /app
 
 # Copy pom.xml and download dependencies
@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Runtime stage
-FROM openjdk:11-jre-slim
+FROM eclipse-temurin:11-jre-jammy
 WORKDIR /app
 
 # Copy the built JAR from build stage
